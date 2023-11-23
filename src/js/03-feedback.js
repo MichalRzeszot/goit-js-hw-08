@@ -30,6 +30,8 @@ document.addEventListener('DOMContentLoaded', function () {
   loadFromLocalStorage();
 
   feedbackForm.addEventListener('submit', function (event) {
+    event.preventDefault();
+
     const formData = {
       email: emailInput.value,
       message: messageInput.value,
@@ -39,6 +41,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     console.log('Submitted Data:', formData);
 
-    event.preventDefault();
+    feedbackForm.reset();
+  });
+
+  feedbackForm.addEventListener('input', function () {
+    saveToLocalStorage();
   });
 });
