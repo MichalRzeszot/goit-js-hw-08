@@ -24,8 +24,10 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   const throttledSaveToLocalStorage = throttle(saveToLocalStorage, 500);
-  emailInput.addEventListener('input', throttledSaveToLocalStorage);
-  messageInput.addEventListener('input', throttledSaveToLocalStorage);
+
+  feedbackForm.addEventListener('input', function () {
+    throttledSaveToLocalStorage();
+  });
 
   loadFromLocalStorage();
 
@@ -42,9 +44,5 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log('Submitted Data:', formData);
 
     feedbackForm.reset();
-  });
-
-  feedbackForm.addEventListener('input', function () {
-    saveToLocalStorage();
   });
 });
