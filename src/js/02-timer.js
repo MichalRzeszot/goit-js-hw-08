@@ -29,7 +29,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const timerSeconds = document.querySelector('[data-seconds]');
 
   let countdownInterval;
-  let timeDifference;
+  let targetDate;
+  let countdownCompleted = false;
 
   const options = {
     enableTime: true,
@@ -40,8 +41,12 @@ document.addEventListener('DOMContentLoaded', function () {
       const selectedDate = selectedDates[0];
 
       if (selectedDate > new Date()) {
+        targetDate = selectedDate.getTime();
         startButton.disabled = false;
-        timeDifference = selectedDate.getTime() - new Date().getTime();
+
+        if (!countdownInterval) {
+          startCountdown();
+        }
       } else {
         Notiflix.Notify.warning('Please choose a date in the future');
         startButton.disabled = true;
@@ -51,24 +56,34 @@ document.addEventListener('DOMContentLoaded', function () {
 
   flatpickr(datetimePicker, options);
 
-  startButton.addEventListener('click', function () {
-    startButton.disabled = true;
-
+  function startCountdown() {
     countdownInterval = setInterval(() => {
-      const { days, hours, minutes, seconds } = convertMs(timeDifference);
-
-      timerDays.textContent = addLeadingZero(days);
-      timerHours.textContent = addLeadingZero(hours);
-      timerMinutes.textContent = addLeadingZero(minutes);
-      timerSeconds.textContent = addLeadingZero(seconds);
+      const currentDate = new Date().getTime();
+      const timeDifference = targetDate - currentDate;
 
       if (timeDifference <= 0) {
         clearInterval(countdownInterval);
+        countdownInterval = null;
         startButton.disabled = false;
-        Notiflix.Notify.success('Countdown completed!');
-      }
 
-      timeDifference -= 1000;
+        if (!countdownCompleted) {
+          countdownCompleted = true;
+          Notiflix.Notify.success('Countdown completed!');
+        }
+      } else {
+        const { days, hours, minutes, seconds } = convertMs(timeDifference);
+
+        timerDays.textContent = addLeadingZero(days);
+        timerHours.textContent = addLeadingZero(hours);
+        timerMinutes.textContent = addLeadingZero(minutes);
+        timerSeconds.textContent = addLeadingZero(seconds);
+      }
     }, 1000);
+  }
+
+  startButton.addEventListener('click', function () {
+    startButton.disabled = true;
+    countdownCompleted = false;
+    startCountdown();
   });
 });
