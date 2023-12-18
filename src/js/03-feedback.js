@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const feedbackForm = document.querySelector('.feedback-form');
   const emailInput = feedbackForm.querySelector('input[name="email"]');
   const messageInput = feedbackForm.querySelector('textarea[name="message"]');
-  const submitButton = feedbackForm.querySelector('button[type="submit"]');
 
   const saveToLocalStorage = () => {
     const formData = {
@@ -18,8 +17,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const formDataString = localStorage.getItem('feedback-form-state');
     if (formDataString) {
       const formData = JSON.parse(formDataString);
-      emailInput.value = formData.email;
-      messageInput.value = formData.message;
+      emailInput.value = formData.email || '';
+      messageInput.value = formData.message || '';
     }
   };
 
@@ -39,9 +38,9 @@ document.addEventListener('DOMContentLoaded', function () {
       message: messageInput.value,
     };
 
-    saveToLocalStorage();
-
     console.log('Submitted Data:', formData);
+
+    localStorage.removeItem('feedback-form-state');
 
     feedbackForm.reset();
   });
